@@ -80,28 +80,28 @@ app.delete('/api/persons/:id', (req, res) => {
 app.post('/api/persons', (req, res) => {
     const body = req.body
 
-    if(!body.name || !body.number){
+    if(body.name === undefined || body.number === undefined){
         return res.status(400).json({
             error: 'name or number missing'
         })
     }
 
-    const person = persons.find(p => p.name === body.name)
+    // const person = persons.find(p => p.name === body.name)
 
-    if (typeof (person) === 'object') {
-        return res.status(400).json({
-            error: 'name must be unique'
-        })
-    }
+    // if (typeof (person) === 'object') {
+    //     return res.status(400).json({
+    //         error: 'name must be unique'
+    //     })
+    // }
 
-    const newPerson = {
+    const newPerson = new Person({
         name: body.name,
         number: body.number,
-        id: generateId()
-    }
+    })
 
-    persons = persons.concat(newPerson)
-    res.json(newPerson)
+    newPerson.save().then(savedPerson => {
+        res.json(savedPerson)
+    })
 })
 
 const PORT = 3001;
@@ -109,6 +109,6 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 })
 
-function generateId() {
-    return Math.floor(Math.random() * 1000000);
-}
+// function generateId() {
+//     return Math.floor(Math.random() * 1000000);
+// }
