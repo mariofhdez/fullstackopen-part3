@@ -63,18 +63,24 @@ app.get('/api/persons', (req, res) => {
     })
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
     Person.findById(id).then(person => {
-        res.json(person)
-    })
+        if(person){
+            res.json(person)
+        } else {
+            res.status(404).end()
+        }
+    }).catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, error) => {
     const id = req.params.id
-    Person.findByIdAndDelete(id).then(result => {
-        res.status(204).end()
-    })
+    Person.findByIdAndDelete(id)
+        .then(result => {
+            res.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
 
@@ -113,3 +119,12 @@ app.listen(PORT, () => {
 // function generateId() {
 //     return Math.floor(Math.random() * 1000000);
 // }
+
+const errorHandler = (error, req, res, next) => {
+    console.log(error.message);
+
+    if(error.name === 'CastError'){
+        return res.status(400).send({ error: 'malformatted id'})
+    }
+}
+app.use(errorHandler)
