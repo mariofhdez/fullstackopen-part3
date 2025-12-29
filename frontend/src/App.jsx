@@ -36,8 +36,7 @@ function App() {
 
   // insert contact
   const addPerson = (newPerson) => {
-
-    const person = persons.find(p => p.name === newPerson.name)
+    const person = persons.find(p => p.name.toLowerCase() === newPerson.name.toLowerCase())
 
     if (typeof (person) === 'object') {
       if (!confirm(`${newPerson.name} is already added to phonebook, replace the old number with a new one?`)) {
