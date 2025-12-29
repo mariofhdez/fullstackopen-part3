@@ -93,6 +93,19 @@ function App() {
               })
             }, 5000)
           })
+          .catch(error => {
+            console.log(error);
+            setMessage({
+              message: `${error.response.data.error}`,
+              type: 'error'
+            })
+            setTimeout(() => {
+              setMessage({
+                message: null,
+                type: null
+              })
+            }, 5000)
+          })
     }
 
   }
