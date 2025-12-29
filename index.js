@@ -51,10 +51,13 @@ app.get('/', (req, res) => {
 
 app.get('/info', (req, res) => {
     const timeStamp = new Date()
-    res.send(`
-        <p>Phonebook has info for ${persons.length} people</p>
-        <p>${timeStamp}</p>
-        `)
+    Person.find({}).then(persons => {
+        res.send(`
+            <p>Phonebook has info for ${persons.length} people</p>
+            <p>${timeStamp}</p>
+            `)
+        
+    })
 })
 
 app.get('/api/persons', (req, res) => {
