@@ -22,29 +22,6 @@ app.use(morgan((tokens, req, res) => {
     ].join(' ')
 }))
 
-let persons = [
-    {
-      "name": "Arto Hellas",
-      "number": "040-123456",
-      "id": 1
-    },
-    {
-      "name": "Ada Lovelace",
-      "number": "39-44-5323523",
-      "id": 2
-    },
-    {
-      "name": "Dan Abramov",
-      "number": "12-43-234345",
-      "id": 3
-    },
-    {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
-      "id": 4
-    }
-]
-
 app.get('/', (req, res) => {
     res.send('<h1>Phonebook</h1>')
 })
@@ -103,14 +80,11 @@ app.post('/api/persons', (req, res, next) => {
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
-    const body = req.body
+    const {name, number} = req.body
 
-    const person = {
-        name: body.name,
-        number: body.number,
-    }
-
-    Person.findByIdAndUpdate(req.params.id, person, { new: true })
+    Person.findByIdAndUpdate(req.params.id,
+        {name, number},
+        { new: true, runValidators: true, context:'query' })
         .then(updatedPerson => {
             res.json(updatedPerson)
         })
@@ -121,10 +95,6 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 })
-
-// function generateId() {
-//     return Math.floor(Math.random() * 1000000);
-// }
 
 const errorHandler = (error, req, res, next) => {
     console.log(error.message);
